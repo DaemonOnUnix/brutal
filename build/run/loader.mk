@@ -3,7 +3,7 @@
 
 DISK=$(BINDIR_LOADER)/disk.hdd
 
-image: $(LOADER) $(PKGS) $(KERNEL) $(BINDIR_LOADER)/tools/OVMF.fd 
+image: $(LOADER) $(PKGS) $(KERNEL)
 	mkdir -p $(BINDIR_LOADER)/image
 	cp -R sysroot/* $(BINDIR_LOADER)/image
 	cp $(PKGS) $(BINDIR_LOADER)/image/pkgs
@@ -13,11 +13,11 @@ image: $(LOADER) $(PKGS) $(KERNEL) $(BINDIR_LOADER)/tools/OVMF.fd
 	cp $(LOADER) $(BINDIR_LOADER)/image/EFI/BOOT/BOOTX64.EFI
 
 $(DISK): image
-	./build/utils/make-maindisk.sh
+	./build/utils/make-disk.sh
 
-run: $(DISK)
+run: $(DISK) $(BINDIR_LOADER)/tools/OVMF.fd
 	$(MKCWD)
-	
+
 	qemu-system-x86_64 \
 		$(QEMU_ARGS) \
 		-serial stdio \
